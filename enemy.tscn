@@ -1,0 +1,71 @@
+[gd_scene load_steps=10 format=3 uid="uid://f0dqxd17y1b0"]
+
+[ext_resource type="Script" path="res://enemy.gd" id="1_47ocx"]
+[ext_resource type="Texture2D" uid="uid://c6u5ewwbfsbwo" path="res://knight.png" id="1_n8hie"]
+[ext_resource type="PackedScene" uid="uid://mt51a8oy6e4t" path="res://Health.tscn" id="3_beerr"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1vcnv"]
+atlas = ExtResource("1_n8hie")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dtp46"]
+atlas = ExtResource("1_n8hie")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y8ms5"]
+atlas = ExtResource("1_n8hie")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rfn1w"]
+atlas = ExtResource("1_n8hie")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tsd7o"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1vcnv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dtp46")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y8ms5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rfn1w")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0kvl8"]
+size = Vector2(28, 46)
+
+[node name="Enemy" type="CharacterBody2D"]
+script = ExtResource("1_47ocx")
+SPEED = 50.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2.3125, 2.3125)
+sprite_frames = SubResource("SpriteFrames_tsd7o")
+animation = &"Idle"
+autoplay = "Idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 9.5)
+shape = SubResource("RectangleShape2D_0kvl8")
+
+[node name="DamageArea" type="Area2D" parent="."]
+position = Vector2(0, 4.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+position = Vector2(0, 2.5)
+shape = SubResource("RectangleShape2D_0kvl8")
+
+[node name="Health" parent="." instance=ExtResource("3_beerr")]
+
+[connection signal="area_entered" from="DamageArea" to="." method="_on_damage_area_area_entered"]
+[connection signal="body_entered" from="DamageArea" to="." method="_on_damage_area_body_entered"]
+[connection signal="health_depleted" from="Health" to="." method="_on_health_health_depleted"]
